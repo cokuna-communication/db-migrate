@@ -65,8 +65,7 @@ Base.prototype.exportTables = async function() {
 }
 
 
-
-Base.prototype.update = async function(tables){
+Base.prototype.updateTables = async function(tables){
     const log = this.log || function(){}
     const cmpColumns = function(a, b){
         for(let i = 0, cn = a.length; i < cn; i++) {
@@ -311,4 +310,8 @@ const getColumnDefaultValue = function(spec){
     return spec.dflt_value
 
 }
+
+Base.updateMethodList.push(Base.prototype.updateTables)
+Base.exportMethodList.push(Base.prototype.exportTables)
+
 module.exports = Base

@@ -4,7 +4,7 @@
 const assert = require('assert')
 //const sqlite3 = require('@journeyapps/sqlcipher').verbose()
 const sqlite3 = require('sqlite3').verbose()
-const DBMigrate = require('../migrate.js')
+const DBMigrate = require('../core/tables.js')
 
 describe('DataBase Migration', function() {
     const testTableColumns = async function(upd, table, expected){
@@ -25,18 +25,6 @@ describe('DataBase Migration', function() {
             assert.ok(expected.find(col => col.name === actual[i].name), `Table ${tableName} has needless column ${expected[i].name}`)
         }
     }
-
-    /**
-     * common functions
-     */
-    describe('Common',function(){
-        const db = new sqlite3.Database(':memory:')
-        const upd = new DBMigrate( db )
-
-        it( 'get db version', async function(){
-            assert.ok(/^[0-9]+\.[0-9]+\.[0-9]+$/.test(await upd.getVersion()))
-        })
-    })
 
     /**
      * test getting table information

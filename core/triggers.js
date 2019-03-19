@@ -84,6 +84,20 @@ Base.prototype.dropTrigger = async function(name) {
 }
 
 /**
+ * @param {object[]}
+ */
+Base.prototype.updateTriggers = async function(dump) {
+
+    for(let i = 0, cn = dump.length; i < cn; i++ ) {
+        const trigger = dump[i]
+        if( 'trigger' === trigger.type ) {
+            this.log( '--- update('+trigger.name+')' )
+            await this.updateTrigger(trigger.name, trigger.action, trigger.target, trigger.code)
+        }
+    }
+    return true
+}
+/**
  *
  */
 Base.prototype.exportTriggers = async function() {
@@ -94,5 +108,9 @@ Base.prototype.exportTriggers = async function() {
     }
     return dump
 }
+
+
+Base.updateMethodList.push(Base.prototype.updateTriggers)
+Base.exportMethodList.push(Base.prototype.exportTriggers)
 
 module.exports = Base
