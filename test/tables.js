@@ -4,7 +4,7 @@
 const assert = require('assert')
 //const sqlite3 = require('@journeyapps/sqlcipher').verbose()
 const sqlite3 = require('sqlite3').verbose()
-const DBMigrate = require('./migrate.js')
+const DBMigrate = require('../migrate.js')
 
 describe('DataBase Migration', function() {
     const testTableColumns = async function(upd, table, expected){

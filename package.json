@@ -1,10 +1,10 @@
 {
   "name": "@cokuna/node-db-migrate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Database updater, compares db with inital data und migrate it to new state. Works with sqlite3 and their forks",
   "main": "migrate.js",
   "scripts": {
-    "test": "mocha test.js"
+    "test": "mocha "
   },
   "repository": {
     "type": "git",
