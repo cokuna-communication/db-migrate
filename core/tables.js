@@ -289,10 +289,11 @@ const createColumnConstraint = function (spec, options) {
 
     if (spec.notnull) constraint.push('NOT NULL')
     if (spec.unique) constraint.push('UNIQUE')
-    if ( spec.dflt_value ) {
-        constraint.push('DEFAULT')
-        constraint.push(getColumnDefaultValue(spec))
-    }
+    if (spec.dflt_value) {
+        constraint.push('DEFAULT', getColumnDefaultValue(spec))
+    } else if (spec.notnull && !spec.pk) {
+        constraint.push('DEFAULT', '""')
+	}
     return constraint.join(' ')
 }
 /**

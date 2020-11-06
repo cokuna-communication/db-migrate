@@ -15,9 +15,11 @@ describe('DataBase Migration', function() {
         assert.equal(actual ? actual.length : 0, expected.length, 'Column count of table '+tableName+' not equals')
         for(let i = 0, cn = expected.length; i < cn; i++) {
             for(let c in expected[i]) {
+	            let e = expected[i][c], a = actual[i][c]
                 //console.log(i, c, expected[i][c], actual[i][c] )
-                assert.ok(typeof actual[i][c] !== 'undefined', `Field ${tableName}.${expected[i].name}.${c} not exists in column #${i}`)
-                assert.equal(actual[i][c], expected[i][c], `Column property ${tableName}.${expected[i].name}.${c} not equal #${i}`)
+	            //if (c === 'dflt_value' && expected[i].notnull && expected[i].dflt_value === null) e = '""' //hook
+                assert.ok(typeof a !== 'undefined', `Field ${tableName}.${expected[i].name}.${c} not exists in column #${i}`)
+                assert.equal(a, e, `Column property ${tableName}.${expected[i].name}.${c} not equal #${i} ${e} != ${a}`)
             }
         }
 
@@ -334,8 +336,13 @@ describe('DataBase Migration', function() {
                 const tableName = expected[i].name
                 const act = actual.find(c => c.name === tableName)
                 assert.ok( !!act, `Table "${tableName}" is missing`)
-                // console.log( expected[i].columns, act.columns )
-                cmpTableColumns(tableName, expected[i].columns, act.columns)
+                const expected_columns = JSON.parse(JSON.stringify(expected[i].columns))
+                //hook: notnull && !pk && dflt_value === null
+                expected_columns.forEach(c => {
+	                if (c.notnull && !c.pk && c.dflt_value === null) c.dflt_value = '""'
+	            })
+                // console.log( expected_columns, act.columns )
+                cmpTableColumns(tableName, expected_columns, act.columns)
 
                 // compare indexes
                 for(let j = 0, jcn = expected[i].indexes ? expected[i].indexes.length : 0; j < jcn; j++){
@@ -457,9 +464,8 @@ describe('DataBase Migration', function() {
             const clone = JSON.parse(JSON.stringify(initial))
             clone[2].indexes = clone[2].indexes.slice(0,2)
             await upd.update(clone)
-
-            compare(initial, await upd.exportTables()) //!! no changes awaited, index drop by this function not permitted
-            await compareValues(initial)
+            compare(clone, await upd.exportTables()) 
+            await compareValues(clone)
         })
     })
 })
